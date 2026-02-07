@@ -1,8 +1,8 @@
-Aman Singh | Design-AI Portfolio System
+## Aman Singh | Design-AI Portfolio System
 Designing Intelligence, Not Interfaces.
 This repository contains the source code for my professional portfolio. It is engineered to bridge the gap between high-fidelity design systems (Figma) and production-ready frontend architecture, with a specific focus on AI-driven user experience (UX) and WCAG 2.2 accessibility.
 
-🛠 Tech Stack
+# 🛠 Tech Stack
 Architecture: Vanilla HTML5, CSS3 (Custom Properties), and ES6+ JavaScript.
 
 Typography: Inter (Interface) & JetBrains Mono (Technical/Data).
@@ -13,7 +13,7 @@ AI Integration: Vanilla JS "Context-Aware" Assistant with intent-based knowledge
 
 Performance: 0 dependencies, <100ms Largest Contentful Paint (LCP), 60fps interaction target.
 
-🚀 Key Features
+## 🚀 Key Features
 1. Figma ↔ CSS Token System
 The design follows a strict tokenization strategy. Every CSS variable in :root is mapped to a Figma variable, ensuring that updates in the design tool can be exported and synced with zero visual regression.
 
@@ -29,7 +29,7 @@ Lead Generation: Directing recruiters to contact channels or meeting booking lin
 3. Progressive Disclosure Case Studies
 Unlike traditional long-form portfolios, this system uses a "Card-to-Panel" architecture. It prioritizes high-level metrics (Impact) for the initial recruiter scan, while providing technical deep-dives (Architecture) for engineering leads.
 
-💻 Local Development
+# 💻 Local Development
 Clone the repository:
 
 Bash
@@ -41,7 +41,7 @@ cd aman-singh-portfolio
 Run with Live Server:
 Open index.html in your browser or use the VS Code "Live Server" extension for hot-reloading.
 
-🌍 Deployment Guide
+# 🌍 Deployment Guide
 Option A: Vercel (Recommended)
 Push this code to a GitHub repository.
 
@@ -58,7 +58,7 @@ Select the main branch and / (root) folder.
 
 Hit Save. Your site will be live at https://yourusername.github.io/repo-name/.
 
-📈 Performance & Accessibility (WCAG 2.2)
+# 📈 Performance & Accessibility (WCAG 2.2)
 This portfolio is optimized for accessibility-first design:
 
 Contrast: All text meets or exceeds WCAG AA standards.
@@ -67,7 +67,7 @@ Navigation: Full keyboard accessibility and focus state management.
 
 SEO: Semantic HTML tags for optimal indexing by recruiter search tools and search engines.
 
-📬 Contact & Links
+# 📬 Contact & Links
 Founder: UXterity
 
 Email: aman@uxterity.com
