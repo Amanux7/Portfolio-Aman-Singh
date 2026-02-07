@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aman Singh | Design-AI Architect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #050505;
+            --surface: #0f0f0f;
+            --accent: #3b82f6;
+            --primary: #ffffff;
+            --secondary: #888888;
+            --grid-unit: 8px;
+            --transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        body { 
+            background: var(--bg); 
+            color: var(--primary); 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Custom Interactive Cursor --- */
+        #cursor {
+            position: fixed; width: 8px; height: 8px; background: var(--primary);
+            border-radius: 50%; pointer-events: none; z-index: 9999;
+            transition: transform 0.1s ease; mix-blend-mode: difference;
+        }
+        #cursor-follower {
+            position: fixed; width: 40px; height: 40px; border: 1px solid var(--accent);
+            border-radius: 50%; pointer-events: none; z-index: 9998;
+            transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* --- Neural Interactive Background --- */
+        #neural-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; opacity: 0.35;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; position: relative; }
+
+        /* --- Hero Section --- */
+        header { height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+        .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 2.5px; }
+        h1 { font-size: clamp(3rem, 10vw, 5.5rem); font-weight: 800; letter-spacing: -4px; line-height: 0.85; margin: 24px 0; }
+        
+        .cta-group { display: flex; gap: 24px; margin-top: 40px; }
+        .interactive-link { color: white; text-decoration: none; font-weight: 700; border-bottom: 2px solid #333; transition: 0.3s; padding-bottom: 4px; }
+        .interactive-link:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* --- Case Study Cards with 3D Tilt --- */
+        .work-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 40px; margin-top: 100px; }
+        .card {
+            background: rgba(20, 20, 20, 0.7);
+            border: 1px solid #1a1a1a;
+            padding: 60px 40px;
+            border-radius: 16px;
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: border-color 0.3s, background 0.3s;
+        }
+        .card:hover { border-color: var(--accent); background: rgba(30, 30, 30, 0.5); }
+        .card-content { transform: translateZ(40px); }
+        
+        .tag { display: inline-block; padding: 4px 12px; border: 1px solid #333; border-radius: 4px; font-size: 0.7rem; margin-bottom: 20px; color: var(--secondary); }
+
+        .metrics { display: flex; gap: 32px; margin-top: 40px; border-top: 1px solid #222; padding-top: 24px; }
+        .metric-val { font-weight: 800; font-size: 1.5rem; display: block; color: var(--primary); }
+        .metric-label { font-size: 0.65rem; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- Figma Mapping Section --- */
+        .figma-section { margin-top: 150px; padding: 80px; background: var(--surface); border-radius: 24px; }
+        .figma-row { display: grid; grid-template-columns: 1fr 1fr 1fr; padding: 24px 0; border-bottom: 1px solid #222; }
+
+        /* --- Floating AI Chat --- */
+        #chat-window {
+            position: fixed; bottom: 100px; right: 30px; width: 360px;
+            background: #0a0a0a; border: 1px solid #333; border-radius: 16px;
+            display: none; flex-direction: column; z-index: 1001; overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+        .chat-trigger {
+            position: fixed; bottom: 30px; right: 30px; width: 64px; height: 64px;
+            background: var(--accent); border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; z-index: 1000;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .work-grid { grid-template-columns: 1fr; }
+            * { cursor: auto !important; }
+            #cursor, #cursor-follower { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-follower"></div>
+<canvas id="neural-canvas"></canvas>
+
+<div class="container">
+    <header>
+        <p class="mono">Aman Singh // Founder of UXterity</p>
+        <h1>Designing Intelligence.<br>Not Interfaces.</h1>
+        <p style="max-width: 550px; color: var(--secondary); font-size: 1.15rem; margin-top: 10px;">
+            UX Designer & AI Researcher. I build adaptive systems and high-density interfaces for FAANG, global startups, and AI-native products.
+        </p>
+        <div class="cta-group">
+            <a href="#work" class="interactive-link interactive">[ View Case Studies ]</a>
+            <a href="mailto:aman@uxterity.com" class="interactive-link interactive">[ Hire Aman ]</a>
+        </div>
+    </header>
+
+    <section id="work">
+        <h2 class="mono" style="margin-bottom: 40px;">Selected Research & Systems</h2>
+        <div class="work-grid">
+            
+            <div class="card interactive-card" data-tilt>
+                <div class="card-content">
+                    <span class="tag">E-commerce • Accessibility</span>
+                    <h3>Amazon Redesign</h3>
+                    <p style="color: var(--secondary); margin-top: 10px;">Accessibility-first overhaul focused on reducing cognitive load via adaptive UI density and WCAG 2.2 AAA compliance.</p>
+                    <div class="metrics">
+                        <div><span class="metric-val">+18%</span><span class="metric-label">Conversion</span></div>
+                        <div><span class="metric-val">AAA</span><span class="metric-label">WCAG Score</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card interactive-card" data-tilt>
+                <div class="card-content">
+                    <span class="tag">FinTech • Predictive AI</span>
+                    <h3>YONO SBI Dashboard</h3>
+                    <p style="color: var(--secondary); margin-top: 10px;">A personalized financial dashboard architecture addressing financial anxiety through proactive ML insight cards.</p>
+                    <div class="metrics">
+                        <div><span class="metric-val">40M+</span><span class="metric-label">Active Users</span></div>
+                        <div><span class="metric-val">-40%</span><span class="metric-label">Anxiety markers</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card interactive-card" data-tilt>
+                <div class="card-content">
+                    <span class="tag">Generative AI • UX Automation</span>
+                    <h3>UX AI Agent: UXD Studio</h3>
+                    <p style="color: var(--secondary); margin-top: 10px;">An autonomous RAG-based agent that automates high-fidelity user flows and design documentation from product requirements.</p>
+                    <div class="metrics">
+                        <div><span class="metric-val">70%</span><span class="metric-label">Discovery Speed</span></div>
+                        <div><span class="metric-val">GPT-4o</span><span class="metric-label">Orchestration</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card interactive-card" data-tilt>
+                <div class="card-content">
+                    <span class="tag">HCI • Tooling • Electron</span>
+                    <h3>Designer IDE</h3>
+                    <p style="color: var(--secondary); margin-top: 10px;">A specialized IDE built with the Monaco engine, ensuring 1:1 token parity between Figma variables and production React code.</p>
+                    <div class="metrics">
+                        <div><span class="metric-val">Monaco</span><span class="metric-label">Code Engine</span></div>
+                        <div><span class="metric-val">99.9%</span><span class="metric-label">Token Fidelity</span></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="figma-section">
+        <h2 class="mono">Figma ↔ HTML Mapping Protocol</h2>
+        <div class="figma-row"><span class="mono">Design Token</span><span class="mono">CSS Mapping</span><span class="mono">Logic</span></div>
+        <div class="figma-row"><span>Auto Layout</span><span>Flex/Grid</span><span>Dynamic Gap Control</span></div>
+        <div class="figma-row"><span>Spacing (8px)</span><span>calc(var(--g)*n)</span><span>Hard Grid Constraints</span></div>
+        <div class="figma-row"><span>Variables</span><span>CSS :root</span><span>JSON Export Sync</span></div>
+    </section>
+
+    <footer style="margin: 150px 0 80px; text-align: center; opacity: 0.4;">
+        <p class="mono">Aman Singh // UXterity // 2026</p>
+    </footer>
+</div>
+
+<div class="chat-trigger interactive" onclick="toggleChat()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+</div>
+<div id="chat-window">
+    <div style="padding: 20px; background: #111; font-weight: 800; border-bottom: 1px solid #222; display: flex; justify-content: space-between;">
+        <span>Ask Aman AI</span>
+        <span class="interactive" onclick="toggleChat()" style="cursor:pointer">&times;</span>
+    </div>
+    <div id="chat-body" style="height: 300px; padding: 20px; overflow-y: auto; font-size: 0.9rem;">
+        <p style="color: var(--accent); margin-bottom: 15px;">Hello! I'm Aman's digital twin. Ask me about the <b>UX AI Agent</b>, <b>Amazon</b>, or <b>Designer IDE</b>.</p>
+    </div>
+    <input type="text" id="chat-input" placeholder="Type a project name..." style="width: 100%; padding: 20px; background: #000; border: none; color: white; outline: none;" onkeypress="if(event.key==='Enter') sendChat()">
+</div>
+
+<script>
+    /* --- 1. Magnetic Cursor --- */
+    const cursor = document.getElementById('cursor');
+    const follower = document.getElementById('cursor-follower');
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+        follower.style.transform = `translate3d(${e.clientX - 15}px, ${e.clientY - 15}px, 0)`;
+    });
+
+    document.querySelectorAll('.interactive, .interactive-card').forEach(el => {
+        el.addEventListener('mouseenter', () => follower.style.transform += ' scale(2)');
+        el.addEventListener('mouseleave', () => follower.style.transform = follower.style.transform.replace(' scale(2)', ''));
+    });
+
+    /* --- 2. Neural Background Canvas --- */
+    const canvas = document.getElementById('neural-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    function initCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        particles = Array.from({length: 70}, () => ({
+            x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4
+        }));
+    }
+    function animateCanvas() {
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 0.25;
+        particles.forEach((p, i) => {
+            p.x += p.vx; p.y += p.vy;
+            if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+            if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            for(let j=i+1; j<particles.length; j++) {
+                let d = Math.hypot(p.x - particles[j].x, p.y - particles[j].y);
+                if(d < 120) { ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke(); }
+            }
+        });
+        requestAnimationFrame(animateCanvas);
+    }
+    window.addEventListener('resize', initCanvas);
+    initCanvas(); animateCanvas();
+
+    /* --- 3. 3D Card Tilt Logic --- */
+    document.querySelectorAll('.interactive-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            card.style.transform = `rotateY(${x * 12}deg) rotateX(${y * -12}deg)`;
+        });
+        card.addEventListener('mouseleave', () => card.style.transform = `rotateY(0deg) rotateX(0deg)`);
+    });
+
+    /* --- 4. AI Assistant Logic --- */
+    function toggleChat() {
+        const win = document.getElementById('chat-window');
+        win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+    }
+    function sendChat() {
+        const input = document.getElementById('chat-input');
+        const body = document.getElementById('chat-body');
+        const q = input.value.toLowerCase();
+        body.innerHTML += `<div style="text-align:right; margin-bottom:15px; color:#555;">${input.value}</div>`;
+        
+        let res = "I'm still learning about that. Try asking about the 'UX Agent' or 'Amazon'.";
+        if(q.includes('agent')) res = "The UX AI Agent automates high-fidelity user flows using LLMs and custom RAG pipelines.";
+        if(q.includes('amazon')) res = "Aman led the Amazon accessibility redesign, focusing on WCAG 2.2 and +18% conversion.";
+        if(q.includes('ide')) res = "The Designer IDE uses the Monaco engine to bridge the gap between Figma variables and React code.";
+        if(q.includes('sbi')) res = "The YONO SBI project used predictive UI to reduce financial anxiety for 40M+ users.";
+
+        setTimeout(() => {
+            body.innerHTML += `<div style="color:var(--accent); margin-bottom:15px;">${res}</div>`;
+            body.scrollTop = body.scrollHeight;
+        }, 500);
+        input.value = '';
+    }
+</script>
+
+</body>
+</html>
